@@ -1,6 +1,6 @@
 <%@ jet 
    package="jcat.testcase.gen" 
-   class="JcatTCGen"
+   class="JcatTCBuilderGen"
    imports="org.testng.annotations.*"
 %>
 
@@ -12,9 +12,9 @@
 
 package <%=pkgName%>
 
-public class <%=className%> extends TestBase
+public class <%=className%>Builder extends TestBase
 {
-	public <%=className%>(){
+	public <%=className%>Builder(){
 		setTestInfo("Constructor of <%=className%>");
 	}
 	

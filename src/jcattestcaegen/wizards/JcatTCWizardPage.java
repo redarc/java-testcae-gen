@@ -1,33 +1,20 @@
 package jcattestcaegen.wizards;
 
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.ui.dialogs.PackageSelectionDialog;
-import org.eclipse.jdt.ui.IJavaElementSearchConstants;
-import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -35,7 +22,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.eclipse.ui.dialogs.SelectionDialog;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -44,11 +30,8 @@ import org.eclipse.ui.dialogs.SelectionDialog;
  */
 
 public class JcatTCWizardPage extends WizardPage {
-	private static final String LINESEPRATOR = System.getProperty("line.separator");
 	private Text containerText;
-	private Text packageText;
 	private Text fileText;
-	//private Text txtItem;
 	private ISelection selection;
 
 	/**
@@ -103,25 +86,6 @@ public class JcatTCWizardPage extends WizardPage {
 			}
 		});
 		
-		/*
-		Composite container = new Composite(parent, SWT.NULL);
-		FormLayout layout = new FormLayout();
-		container.setLayout(layout);
-		
-		FormData data = new FormData();
-		data.top = new FormAttachment(0, 0);
-		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(100, 0);
-		data.bottom = new FormAttachment(100, 0);
-		
-		txtItem = new Text(container, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		txtItem.setLayoutData(data);
-		txtItem.addModifyListener(new ModifyListener(){
-			public void modifyText(ModifyEvent e){
-				dialogChanged();
-			}
-		});
-		*/
 		initialize();
 		dialogChanged();
 		setControl(container);
@@ -154,49 +118,15 @@ public class JcatTCWizardPage extends WizardPage {
 				containerText.setText(container.getFullPath().toString());
 			}
 		}
-		fileText.setText("ttt.java");
+		fileText.setText("");
 	}
 
-	private IJavaProject getCurrentJavaProject(){
-		if (selection != null && selection.isEmpty() == false
-				&& selection instanceof IStructuredSelection) {
-			IStructuredSelection ssel = (IStructuredSelection) selection;
-			if (ssel.size() > 1)
-				return null;
-			Object obj = ssel.getFirstElement();
-			if(obj instanceof IJavaElement){
-				return ((IJavaElement)obj).getJavaProject();
-			}
-		}
-		return null;
-	}
 	/**
 	 * Uses the standard container selection dialog to choose the new value for
 	 * the container field.
 	 */
 
 	private void handleBrowse() {
-		/*
-		IJavaProject javaProject = getCurrentJavaProject();
-		if(javaProject == null){
-			MessageDialog.openWarning(getShell(), "error","Please run this wizard in Java Project");
-		}
-		
-		SelectionDialog dialog = null;
-		try{
-			dialog = JavaUI.createPackageDialog(getShell(), javaProject, IJavaElementSearchConstants.CONSIDER_REQUIRED_PROJECTS);
-		}catch(JavaModelException el){
-			MessageDialog.openWarning(getShell(), "error", el.getMessage());
-			el.printStackTrace();
-		}
-		
-		if(dialog.open() == Window.OK){
-			IPackageFragment pck = (IPackageFragment)dialog.getResult()[0];
-			if(pck != null){
-				containerText.setText(pck.getElementName());
-			}
-		}
-		*/
 		ContainerSelectionDialog dialog = new ContainerSelectionDialog(
 				getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
 				"Select new file container");
@@ -215,8 +145,7 @@ public class JcatTCWizardPage extends WizardPage {
 	 */
 
 	private void dialogChanged() {
-		IResource container = ResourcesPlugin.getWorkspace().getRoot()
-				.findMember(new Path(getContainerName()));
+		IResource container = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(getContainerName()));
 		String fileName = getFileName();
 
 		if (getContainerName().length() == 0) {
@@ -240,6 +169,7 @@ public class JcatTCWizardPage extends WizardPage {
 			updateStatus("File name must be valid");
 			return;
 		}
+		/*
 		int dotLoc = fileName.lastIndexOf('.');
 		if (dotLoc != -1) {
 			String ext = fileName.substring(dotLoc + 1);
@@ -248,27 +178,8 @@ public class JcatTCWizardPage extends WizardPage {
 				return;
 			}
 		}
-		updateStatus(null);
-		/*
-		String strItems = txtItem.getText();
-		if(strItems == null || strItems.trim().length() <= 0){
-			updateStatus("Please input enum");
-			return;
-		}
-		String[] itemArray = strItems.split(LINESEPRATOR);
-		Set<String> set = new HashSet<String>();
-		for(String item : itemArray){
-			if(item == null || item.trim().length() <= 0){
-				continue;
-			}
-			if(set.contains(item)){
-				updateStatus("Duplicate item " + item);
-				return;
-			}
-			updateStatus(null);
-			set.add(item);
-		}
 		*/
+		updateStatus(null);
 	}
 
 	private void updateStatus(String message) {
@@ -282,9 +193,5 @@ public class JcatTCWizardPage extends WizardPage {
 
 	public String getFileName() {
 		return fileText.getText();
-	}
-	
-	public String getPackageName(){
-		return packageText.getText();
 	}
 }

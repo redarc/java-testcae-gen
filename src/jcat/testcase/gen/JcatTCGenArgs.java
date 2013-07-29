@@ -1,4 +1,4 @@
-package jcattestcaegen.wizards;
+package jcat.testcase.gen;
 
 public class JcatTCGenArgs {
 	private String pkgName;

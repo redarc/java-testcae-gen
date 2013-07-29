@@ -1,6 +1,6 @@
 <%@ jet 
    package="jcat.testcase.gen" 
-   class="JcatTCGen"
+   class="JcatTCModuleGen"
    imports="org.testng.annotations.*"
 %>
 

@@ -6,12 +6,21 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.operation.*;
+
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
+
 import java.io.*;
+
+import jcat.testcase.gen.JcatTCBuilderGen;
+import jcat.testcase.gen.JcatTCGen;
+import jcat.testcase.gen.JcatTCGenArgs;
+import jcat.testcase.gen.JcatTCModuleGen;
+
 import org.eclipse.ui.*;
 import org.eclipse.ui.ide.IDE;
 
@@ -78,27 +87,15 @@ public class JcatTCWizard extends Wizard implements INewWizard {
 		return true;
 	}
 	
-	/**
-	 * The worker method. It will find the container, create the
-	 * file if missing or just replace its contents, and open
-	 * the editor on the newly created file.
-	 */
-
-	private void doFinish(String containerName,
-		                  String fileName,
-		                  IProgressMonitor monitor)throws CoreException {
-		// create a sample file
-		monitor.beginTask("Creating " + fileName, 4);
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IResource resource = root.findMember(new Path(containerName));
-		if (!resource.exists() || !(resource instanceof IContainer)) {
-			throwCoreException("Container \"" + containerName + "\" does not exist.");
-		}
-		IContainer container = (IContainer) resource;
+	private void generatorJcatTC(IContainer container,
+                                 String fileName,
+                                 String content,
+                                 IProgressMonitor monitor) throws CoreException{
 		
-		final IFile file = container.getFile(new Path(fileName));
+		//TODO replace stream
+		final IFile file = container.getFile(new Path(fileName.concat("Test.java")));
 		try {
-			InputStream stream = openContentStream();
+			InputStream stream = new ByteArrayInputStream(content.getBytes());
 			if (file.exists()) {
 				file.setContents(stream, true, true, monitor);
 			} else {
@@ -109,34 +106,46 @@ public class JcatTCWizard extends Wizard implements INewWizard {
 			e.printStackTrace();
 		}
 		monitor.worked(1);
-		final IFile fileBuilder = container.getFile(new Path(fileName.concat("Builder")));
-		try {
-			InputStream stream = openContentStream();
-			if (fileBuilder.exists()) {
-				fileBuilder.setContents(stream, true, true, monitor);
-			} else {
-				fileBuilder.create(stream, true, monitor);
-			}
-			stream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+	}
+	/**
+	 * The worker method. It will find the container, create the
+	 * file if missing or just replace its contents, and open
+	 * the editor on the newly created file.
+	 */
+
+	private void doFinish(String containerName,
+		                  String testCaseName,
+		                  IProgressMonitor monitor)throws CoreException {
+		// create a sample file
+		monitor.beginTask("Creating " + testCaseName, 4);
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IResource resource = root.findMember(new Path(containerName));
+		if (!resource.exists() || !(resource instanceof IContainer)) {
+			throwCoreException("Container \"" + containerName + "\" does not exist.");
 		}
-		monitor.worked(2);
+		IContainer container = (IContainer) resource;
+		final IFile file = container.getFile(new Path(testCaseName.concat("Test.java")));
 		
-		final IFile fileModule = container.getFile(new Path(fileName.concat("Module")));
-		try {
-			InputStream stream = openContentStream();
-			if (fileModule.exists()) {
-				fileModule.setContents(stream, true, true, monitor);
-			} else {
-				fileModule.create(stream, true, monitor);
-			}
-			stream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		monitor.worked(3);
+		JcatTCGenArgs jargs = new JcatTCGenArgs();
+		jargs.setClassName(testCaseName);
+		jargs.setPkgName("com.ericsson.msr.tests.grat.createdeletemo");
+		JcatTCGen gen = new JcatTCGen();
+		generatorJcatTC(container, testCaseName, gen.generate(jargs), monitor);
+
 		
+		JcatTCGenArgs tcbuilderargs = new JcatTCGenArgs();
+		jargs.setClassName(testCaseName.concat("ModuleBuilder"));
+		jargs.setPkgName("com.ericsson.msr.tests.grat.createdeletemo");
+		JcatTCBuilderGen buildergen = new JcatTCBuilderGen();
+		generatorJcatTC(container, testCaseName.concat("ModuleBuilder"), buildergen.generate(tcbuilderargs), monitor);
+		
+		JcatTCGenArgs jmoduleargs = new JcatTCGenArgs();
+		jargs.setClassName(testCaseName.concat("Module"));
+		jargs.setPkgName("com.ericsson.msr.tests.grat.createdeletemo");
+		JcatTCModuleGen modulegen = new JcatTCModuleGen();
+		generatorJcatTC(container, testCaseName.concat("Module"), modulegen.generate(jmoduleargs), monitor);
+		
+		//Default open testcase.java
 		monitor.setTaskName("Opening file for editing...");
 		getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
@@ -151,22 +160,6 @@ public class JcatTCWizard extends Wizard implements INewWizard {
 		monitor.worked(4);
 	}
 	
-	/**
-	 * We will initialize file contents with a sample text.
-	 */
-
-	private InputStream openContentStream() {
-		String contents =
-			"This is the initial file contents for *.java file that should be word-sorted in the Preview page of the multi-page editor";
-
-		JcatTCGenArgs jargs = new JcatTCGenArgs();
-		jargs.setClassName("SPSWP2464");
-		jargs.setPkgName("com.redarc");
-		
-		JcatTCGen gen = new JcatTCGen();
-		return new ByteArrayInputStream(gen.generate(jargs).getBytes());
-	}
-
 	private void throwCoreException(String message) throws CoreException {
 		IStatus status =
 			new Status(IStatus.ERROR, "jcat-testcae-gen", IStatus.OK, message, null);
