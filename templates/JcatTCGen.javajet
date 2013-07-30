@@ -12,6 +12,10 @@
 
 package <%=pkgName%>
 
+import org.testng.annotations.*;
+import com.ericsson.tac.jcat.TestBase;
+import com.ericsson.msr.tests.grat.createmo.CreateMoTestModule;
+
 public class <%=className%> extends TestBase
 {
 	public <%=className%>(){
