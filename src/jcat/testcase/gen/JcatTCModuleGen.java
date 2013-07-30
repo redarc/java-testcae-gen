@@ -1,7 +1,5 @@
 package jcat.testcase.gen;
 
-import org.testng.annotations.*;
-
 public class JcatTCModuleGen
 {
   protected static String nl;
@@ -16,11 +14,15 @@ public class JcatTCModuleGen
   public final String NL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl;
   protected final String TEXT_1 = "";
   protected final String TEXT_2 = NL + NL + "package ";
-  protected final String TEXT_3 = NL + NL + "public class ";
-  protected final String TEXT_4 = " extends TestBase" + NL + "{" + NL + "\tpublic ";
-  protected final String TEXT_5 = "(){" + NL + "\t\tsetTestInfo(\"Constructor of ";
-  protected final String TEXT_6 = "\");" + NL + "\t}" + NL + "\t" + NL + "    /**" + NL + "     * Runs a test that uses the {@link CreateMoTestModule} test module. " + NL + "     * Same or different test modules can be used in various test methods." + NL + "     * " + NL + "     * @param  moLdn" + NL + "     *        " + NL + "     * @throws Exception" + NL + "     */" + NL + "\t@Test" + NL + "\t@Parameters({\"moldn\"})" + NL + "\tpublic void test1(String moldn){" + NL + "\t    setTestcase(\"createDeleteMoTestCase\", \"createDeleteMoTestCase\");" + NL + "        CreateDeleteMoTestModule testModule = CreateDeleteMoTestModule.newBuilder()" + NL + "                .setMoLdn(moLdn)" + NL + "                .build();" + NL + "        testModule.execute();" + NL + "\t}" + NL + "}" + NL;
-  protected final String TEXT_7 = NL;
+  protected final String TEXT_3 = NL + NL + "/**" + NL + " *   " + NL + " * @name ";
+  protected final String TEXT_4 = NL + " *       " + NL + " * @author " + NL + " *       " + NL + " * @created " + NL + " *       " + NL + " * @description" + NL + " *       " + NL + " * @revision " + NL + " *  " + NL + " */" + NL + "" + NL + "public class ";
+  protected final String TEXT_5 = " extends GratHelper" + NL + "{" + NL + "    // builder variables" + NL + "    private String param;" + NL + "" + NL + "" + NL + "" + NL + "    /**" + NL + "     * The constructor. It is used by the build method in the builder class. To get" + NL + "     * an instance of this class, use the builder." + NL + "     * " + NL + "     * @param builder An instance of the builder of this class" + NL + "     */" + NL + "    protected ";
+  protected final String TEXT_6 = "(";
+  protected final String TEXT_7 = "Builder builder) " + NL + "    {       " + NL + "        param=builder.param;        " + NL + "    }" + NL + "" + NL + "    /**" + NL + "     * Gets a new instance of the builder of this class {@link ";
+  protected final String TEXT_8 = "Builder}." + NL + "     * " + NL + "     * @return The builder." + NL + "     */" + NL + "    public static ";
+  protected final String TEXT_9 = "Builder newBuilder() " + NL + "    {" + NL + "        return new ";
+  protected final String TEXT_10 = "Builder();" + NL + "    }" + NL + "" + NL + "    /**" + NL + "     * This method is the test method. It creates the given MO (Managed Object)." + NL + "     *   " + NL + "     */" + NL + "    public void execute() throws ConnectionException" + NL + "    {" + NL + "" + NL + "    }" + NL + "}" + NL + NL + NL;
+  protected final String TEXT_11 = NL;
 
   public String generate(Object argument)
   {
@@ -40,7 +42,15 @@ public class JcatTCModuleGen
     stringBuffer.append(TEXT_5);
     stringBuffer.append(className);
     stringBuffer.append(TEXT_6);
+    stringBuffer.append(className);
     stringBuffer.append(TEXT_7);
+    stringBuffer.append(className);
+    stringBuffer.append(TEXT_8);
+    stringBuffer.append(className);
+    stringBuffer.append(TEXT_9);
+    stringBuffer.append(className);
+    stringBuffer.append(TEXT_10);
+    stringBuffer.append(TEXT_11);
     return stringBuffer.toString();
   }
 }

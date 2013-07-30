@@ -93,7 +93,7 @@ public class JcatTCWizard extends Wizard implements INewWizard {
                                  IProgressMonitor monitor) throws CoreException{
 		
 		//TODO replace stream
-		final IFile file = container.getFile(new Path(fileName.concat("Test.java")));
+		final IFile file = container.getFile(new Path(fileName.concat(".java")));
 		try {
 			InputStream stream = new ByteArrayInputStream(content.getBytes());
 			if (file.exists()) {
@@ -105,7 +105,6 @@ public class JcatTCWizard extends Wizard implements INewWizard {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		monitor.worked(1);
 	}
 	/**
 	 * The worker method. It will find the container, create the
@@ -127,23 +126,25 @@ public class JcatTCWizard extends Wizard implements INewWizard {
 		final IFile file = container.getFile(new Path(testCaseName.concat("Test.java")));
 		
 		JcatTCGenArgs jargs = new JcatTCGenArgs();
-		jargs.setClassName(testCaseName);
-		jargs.setPkgName("com.ericsson.msr.tests.grat.createdeletemo");
+		jargs.setClassName(testCaseName.concat("Test"));
+		jargs.setPkgName("com.ericsson.msr.tests." + testCaseName);
 		JcatTCGen gen = new JcatTCGen();
-		generatorJcatTC(container, testCaseName, gen.generate(jargs), monitor);
-
+		generatorJcatTC(container, testCaseName.concat("Test"), gen.generate(jargs), monitor);
+		monitor.worked(1);
 		
 		JcatTCGenArgs tcbuilderargs = new JcatTCGenArgs();
-		jargs.setClassName(testCaseName.concat("ModuleBuilder"));
-		jargs.setPkgName("com.ericsson.msr.tests.grat.createdeletemo");
+		tcbuilderargs.setClassName(testCaseName.concat("TestModuleBuilder"));
+		tcbuilderargs.setPkgName("com.ericsson.msr.tests." + testCaseName);
 		JcatTCBuilderGen buildergen = new JcatTCBuilderGen();
-		generatorJcatTC(container, testCaseName.concat("ModuleBuilder"), buildergen.generate(tcbuilderargs), monitor);
+		generatorJcatTC(container, testCaseName.concat("TestModuleBuilder"), buildergen.generate(tcbuilderargs), monitor);
+		monitor.worked(2);
 		
 		JcatTCGenArgs jmoduleargs = new JcatTCGenArgs();
-		jargs.setClassName(testCaseName.concat("Module"));
-		jargs.setPkgName("com.ericsson.msr.tests.grat.createdeletemo");
+		jmoduleargs.setClassName(testCaseName.concat("TestModule"));
+		jmoduleargs.setPkgName("com.ericsson.msr.tests." + testCaseName);
 		JcatTCModuleGen modulegen = new JcatTCModuleGen();
-		generatorJcatTC(container, testCaseName.concat("Module"), modulegen.generate(jmoduleargs), monitor);
+		generatorJcatTC(container, testCaseName.concat("TestModule"), modulegen.generate(jmoduleargs), monitor);
+		monitor.worked(3);
 		
 		//Default open testcase.java
 		monitor.setTaskName("Opening file for editing...");

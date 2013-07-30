@@ -1,7 +1,7 @@
 <%@ jet 
    package="jcat.testcase.gen" 
    class="JcatTCModuleGen"
-   imports="org.testng.annotations.*"
+   imports=""
 %>
 
 <%
@@ -12,28 +12,57 @@
 
 package <%=pkgName%>
 
-public class <%=className%> extends TestBase
+/**
+ *   
+ * @name <%=className%>
+ *       
+ * @author 
+ *       
+ * @created 
+ *       
+ * @description
+ *       
+ * @revision 
+ *  
+ */
+
+public class <%=className%> extends GratHelper
 {
-	public <%=className%>(){
-		setTestInfo("Constructor of <%=className%>");
-	}
-	
+    // builder variables
+    private String param;
+
+
+
     /**
-     * Runs a test that uses the {@link CreateMoTestModule} test module. 
-     * Same or different test modules can be used in various test methods.
+     * The constructor. It is used by the build method in the builder class. To get
+     * an instance of this class, use the builder.
      * 
-     * @param  moLdn
-     *        
-     * @throws Exception
+     * @param builder An instance of the builder of this class
      */
-	@Test
-	@Parameters({"moldn"})
-	public void test1(String moldn){
-	    setTestcase("createDeleteMoTestCase", "createDeleteMoTestCase");
-        CreateDeleteMoTestModule testModule = CreateDeleteMoTestModule.newBuilder()
-                .setMoLdn(moLdn)
-                .build();
-        testModule.execute();
-	}
+    protected <%=className%>(<%=className%>Builder builder) 
+    {       
+        param=builder.param;        
+    }
+
+    /**
+     * Gets a new instance of the builder of this class {@link <%=className%>Builder}.
+     * 
+     * @return The builder.
+     */
+    public static <%=className%>Builder newBuilder() 
+    {
+        return new <%=className%>Builder();
+    }
+
+    /**
+     * This method is the test method. It creates the given MO (Managed Object).
+     *   
+     */
+    public void execute() throws ConnectionException
+    {
+
+    }
 }
+
+
 

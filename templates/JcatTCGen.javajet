@@ -1,20 +1,77 @@
 <%@ jet 
    package="jcat.testcase.gen" 
    class="JcatTCGen"
-   imports="org.testng.annotations.*"
+   imports=""
 %>
 
 <%
 	JcatTCGenArgs args = (JcatTCGenArgs)argument;
     String pkgName = args.getPkgName();
-    String className = args.getClassName(); 
+    String className = args.getClassName();
 %>
 
 package <%=pkgName%>
 
 import org.testng.annotations.*;
+import se.ericsson.jcat.fw.annotations.*;
 import com.ericsson.tac.jcat.TestBase;
-import com.ericsson.msr.tests.grat.createmo.CreateMoTestModule;
+
+/**
+ * @id  TC_<%=className%>
+ *       <p>
+ *       The @id tag is used to give your script a machine readable unique identity. 
+ *       To allow the database-tracking of the script it is important that the id is unique!
+ *   
+ * @name An example test showing how to use test modules and builders.
+ *       <p>
+ *       The @name tag is used to give a more user friendly name to the script. 
+ *       Use a short sentence or a set of keywords to name the script.
+ *       
+ * @author 
+ *       <p>
+ *       Your signum 
+ *       
+ * @created 
+ *       <p>
+ *       The year-month-day 
+ *       
+ * @description  This test uses the {@link <%=className%>TestModuleBuilder} to configure and build a
+ *       {@link <%=className%>TestModule}. Then the test modules execute(test) method is executed.
+ *        If more information needed of passing parameters to before/afterSuite, before/afterTest
+ *       from XML file please refer to {@link com.ericsson.lte.templates.helloworld} 
+ *       <p>
+ *       A description of what the script does. More detailed than the @name tag.
+ *       
+ * @revision 
+ *       <p>
+ *       The revision tag should include your signum, the date and a description of the revision
+ *  
+ * Optional tags:      
+ * @deviation 
+ *       <p>
+ *       If the ID of your script is shared by an existing test case and your test script does not follow the existing test case exactly, note all deviations with deviation tags. One tag per deviation.
+ *       Example: @deviation The synchronization time limit will be set to 15 minutes due to lack of framework support for checking the synchronization constraints
+ * 
+ * @precondition 
+ *       <p>
+ *       The @precondition tags will be used to allow both humans and computer systems to decide whether a script can be run on a certain test configuration or not.
+ * 
+ * @tags Template,Example
+ *       <p>
+ *       Allows freeform tagging of scripts for any suitable reason. Test scripts can then be sorted and searched for by the tags they use
+ * 
+ * @trace 
+ *       <p>
+ *       The @trace tag allows the test scripter to suggest some traces to be enabled when re-running a failed test, to allow easier troubleshooting
+ * 
+ * @nodetype
+ *       <p>
+ *       Defines which nodeType this test is meant to run towards for example is it a multistandard node, LTE only
+ * 
+ * @softwareVersion 
+ *       <p>
+ *        Defines which software version this is supposed to work for.
+ */
 
 public class <%=className%> extends TestBase
 {
@@ -22,22 +79,72 @@ public class <%=className%> extends TestBase
 		setTestInfo("Constructor of <%=className%>");
 	}
 	
+
     /**
-     * Runs a test that uses the {@link CreateMoTestModule} test module. 
+     * Optional method for doing something once, before the first test execution.    
+     * 
+     * @param context
+     * @throws Exception
+     */
+    @BeforeClass
+    public void beforeClass() throws Exception {
+        setTestcase("beforeClass", "beforeClass");
+        setTestInfo("****beforeClass"); 
+    }
+
+    /**
+     * Optional method for doing something once, after the last test execution.
+     * 
+     * AfterClass would skip execution if any dependent methods fails.  
+     * If some actions are required to execute in AfterClass, e.g., clean up, restore system, 
+     * then set @AfterClass(alwaysRun = true).
+     * 
+     * @throws Exception
+     */
+    @AfterClass
+    public void afterClass() throws Exception {
+        setTestcase("afterClass", "afterClass");
+        setTestInfo("****afterClass");
+    }
+
+    /**
+     * Optional method for doing something before each test execution.
+     * 
+     * @throws Exception
+     */
+    @Setup
+    public void setup() throws Exception {
+        setTestInfo("****setup");
+    }
+
+    /**
+     * Optional method for doing something after each test execution.
+     * 
+     * @throws Exception
+     */
+    @Teardown
+    public void teardown() throws Exception {
+        setTestInfo("****teardown");
+    }
+
+
+    /**
+     * Runs a test that uses the {@link <%=className%>TestModule} test module. 
      * Same or different test modules can be used in various test methods.
      * 
      * @param  moLdn
      *        
      * @throws Exception
      */
-	@Test
-	@Parameters({"moldn"})
-	public void test1(String moldn){
-	    setTestcase("createDeleteMoTestCase", "createDeleteMoTestCase");
-        CreateDeleteMoTestModule testModule = CreateDeleteMoTestModule.newBuilder()
-                .setMoLdn(moLdn)
+    @Test
+    @Parameters({"param"})
+    public void test(String param)
+            throws Exception {
+        setTestcase("createMoTestCase", "createMoTestCase");
+        <%=className%>TestModule testModule = <%=className%>TestModule.newBuilder()
+                .setParam(param)
                 .build();
         testModule.execute();
-	}
-}
+    }
 
+}

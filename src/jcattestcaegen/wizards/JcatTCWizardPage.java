@@ -169,16 +169,6 @@ public class JcatTCWizardPage extends WizardPage {
 			updateStatus("File name must be valid");
 			return;
 		}
-		/*
-		int dotLoc = fileName.lastIndexOf('.');
-		if (dotLoc != -1) {
-			String ext = fileName.substring(dotLoc + 1);
-			if (ext.equalsIgnoreCase("java") == false) {
-				updateStatus("File extension must be \"java\"");
-				return;
-			}
-		}
-		*/
 		updateStatus(null);
 	}
 
