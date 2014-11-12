@@ -1,4 +1,4 @@
-jcat-testcae-gen
+java-testcae-gen
 ================
 
-jcat test case generator automaticlly
+java test case generator automaticlly
